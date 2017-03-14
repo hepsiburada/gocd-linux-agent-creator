@@ -1,0 +1,77 @@
+- name: Install GO CD Agent
+  hosts: goagents
+  user: root
+
+  tasks:
+    - name: Update Repositories
+      apt:
+        update_cache: yes
+
+    - name: GoCD Installation Pre Step 1
+      command: bash -c "echo "deb https://download.gocd.io /" | sudo tee /etc/apt/sources.list.d/gocd.list"
+    
+    - name: GoCD Installation Pre Step 2
+      command: bash -c "curl https://download.gocd.io/GOCD-GPG-KEY.asc | sudo apt-key add -"
+
+    - name: Update Repositories and Install go-agent with version 17.0.2
+      apt:
+        name: go-agent=17.2.0-4587
+        update_cache: yes
+
+    - name: Docker Installation Pre Step 1
+      apt: name={{item}} state=installed
+      with_items:
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+
+    - name: Docker Installation Pre Step 2
+      command: bash -c "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+
+    - name: Add Docker repository and update apt cache
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+        mode: '644'
+        update_cache: yes
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce=17.03.0~ce-0~ubuntu-xenial
+        update_cache: yes
+
+    - name: Install Docker Compose Pre Step 1
+      command: bash -c "curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
+
+    - name: Install Docker Compose Pre Step 2
+      command: bash -c "chmod +x /usr/local/bin/docker-compose"
+
+    - name: Install Java 8 Open JDK
+      apt:
+        name: openjdk-8-jdk
+
+    - name: Copy GoCD Configuration
+      copy:
+        src: /vagrant/go-agent
+        dest: /etc/default
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Copy daemon.json for Docker Registry
+      copy:
+        src: /vagrant/daemon.json
+        dest: /etc/docker/
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Restart docker daemon
+      service:
+        name: docker
+        state: restarted
+
+    - name: Restart GoCD Agent
+      service:
+        name: go-agent
+        state: restarted

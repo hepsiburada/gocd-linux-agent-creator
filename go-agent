@@ -1,0 +1,9 @@
+GO_SERVER=YOUR_GO_SERVER_URL
+GO_SERVER_PORT=YOUR_GO_SERVER_PORT
+export GO_SERVER_PORT
+export GO_SERVER
+AGENT_WORK_DIR=/var/lib/${SERVICE_NAME:-go-agent}
+export AGENT_WORK_DIR
+DAEMON=Y
+VNC=N
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64

@@ -1,0 +1,7 @@
+{
+  "registry-mirrors": [],
+  "insecure-registries": [
+    "YOUR_DOCKER_REG_IP:5000"
+  ],
+  "debug": false
+}
