@@ -1,10 +1,15 @@
-Assigning GOCD agents with Ansible.
+__Assigning GOCD agents with Ansible.__
 You need a linux machine containing Ansible, thats why we use Vagrant.
+
+### How?
+* Your ansible installed linux machine, or vagranted virtual machine connects to each host mentioned in `hosts`
+* It installs go-agent, docker and docker compose
+* Related configuration is introduced
+* Done!
 
 __Installs Go Agent version 17.2.0-4587__
 
 ### Prerequisites
-You need a linux machine containing Ansible, thats why we are going to use Vagrant.
 * You already installed Vagrant and Oracle Virtual Machine.
 * Change agent ip list in `hosts` file
 * Change docker registry server ip in `daemon.json`
